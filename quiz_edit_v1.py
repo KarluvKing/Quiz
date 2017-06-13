@@ -1,3 +1,4 @@
+import random
 
 def chooseLevel(level): #Here are the texts and the corresponding missing words!
     #level1
