@@ -1,6 +1,12 @@
 import random
 
-def choose_level(level): #Here are the texts and the corresponding missing words!
+def choose_level(level):
+  """
+  Behavior: Taking into account the user's choice of level, this method randomly chooses 1 of the 3 texts that exist for each level and also returns the 
+            list of missing words that corresponds to the text
+  Input: the number of the level
+  Output: returns text with blanks spaces and list of missing words in tuple format
+  """
   easy_level = 1
   medium_level = 2
   hard_level = 3
@@ -72,37 +78,76 @@ def choose_level(level): #Here are the texts and the corresponding missing words
   if level == hard_level: #If the choice is level 3, randomly choose one of the three texts. And return the text. And the missing words.
     return random.choice( [(hard_text_a,medium_answers_a), (hard_text_b,medium_answers_b), (hard_text_c,medium_answers_c)] )
 
-def check_word(hits,phrase_edit): #Verifies that the word chosen by the user matches the blank space
+def check_word(hits, words):
+  """
+  Behavior: Verifies that the word chosen by the user, matches the missing word in the text
+  Input: The number of hits and the word to check
+  Output: Indicates if the word corresponds to the blank space or not
+  """
   txt_hits = hits + 1 #txt_hits is a temporary variable to help identify what white space the user is trying to reach.
   str(txt_hits)
   print ""
   #Prompts the user to type the word
-  whatIsTheWord = raw_input('What is the missing word __%d__?...: ' %txt_hits).upper() # The upper one always allows to transform the words that the user enters in capital letters and thus to correspond exactly if it hits the missing word.
-  print ""
+  whatIsTheWord = raw_input('What is the missing word __%d__?...: \n' %txt_hits).upper() # The upper one always allows to transform the words that the user enters in capital letters and thus to correspond exactly if it hits the missing word.
   #Verifies that the word chosen by the user matches the respective blank space.
-  if whatIsTheWord == words[hits]:
+  if whatIsTheWord == words:
     #If yes, return True
     return True
   else:
     #If no, return False
     return False
 
+def play(level, attempts):
+  """
+  Behavior: Main function of the game, makes the whole game work. Is the function responsible for fetching the text that will serve to play, 
+            which checks the remaining attempts and that counts the hits of the user and thus determine the final outcome of the game.
+  Input: The level and the attempts chosen by the user
+  Output: The number of user hits
+  """
+  hits = 0 #Starts the variable hits to zero.
+  phrase_and_words = choose_level(level) #Depending on the level chosen by the user, calls the choose_level function to get the text and missing words.
+  phrase = phrase_and_words[0].split() #Separates text from words and assigns text to variable phrase
+  words = phrase_and_words[1] #Separates the words and assigns words to variable words
+  phrase_edit = ' '.join(phrase) #The variable phrase_edit serves to print the text to the screen in a string format for a better visualization of the user. 
+  attemps_minimum = 0
+  hits_maximum = 4
+  while attempts > attemps_minimum and hits < hits_maximum: #While attempts are greater than zero and hits less than four, the game runs.
+      txt_hits = str(hits+1) #txt_hits is an auxiliary variable that allows to display whitespace with the correct values for the user.
+      print phrase_edit #print the text to the screen in a string format for a better visualization of the user.
+      word_position = words[hits]
+      if check_word(hits, word_position): ##Checks with the help of the check Word function, taking into account the hits already obtained by the user which word to discover in the text.
+        print "\nCongratulations! You get the word!\n" 
+        phrase_edit = phrase_edit.replace('___%s___'%txt_hits, word_position) ##If the user hits the missing words, the text appears with the blanks filled as the user hits.
+        hits += 1 #hits += 1 #If the user hits, he adds 1 to the hits which allows him to move to the next blank space.
+      else:
+        attempts -= 1 #If the user fails, remove 1 of the remaining attempts and informs the user how many attempts still have.
+        if attempts > 0:
+          print "\nYou fail! But you still have %d attempts!!!\n" %attempts
+        else:
+          print "\nYou have no more attempts! :'(\n"
+  game_result(hits) #Taking into account the hits, verifies if the user won by calling the game_result function.
+
 def game_result(hits): #This function checks if the user has hit the 4 times
+  """
+  Behavior: Verify if the number of hits. If the number is equal to 4, indicates that the user has won, otherwise the user has lost.
+  Input: the number of hits
+  Output: feedback for the user win our loose.
+  """
   limit_hits = 4
   if hits == limit_hits:
-    #If yes, return True
     print "\n\o/ Congratulations, you won! \o/ :-)\n"
 
   else:
-    #If no, return False
     print "\nYou loose! :-(\n"
 
-################# beginning of the game ###################################
+'''
+Beginning of the game
+'''
 
 level = 0
 attempts = 0
 
-## Print the game information menu
+# Print the game information menu
 print "\nWelcome to the game!\n"
 print "In this game we will test your knowledge about 3 European cities. Rome, Prague, and Lisbon.\n"
 print "*" * 16
@@ -112,23 +157,23 @@ print "Level 2 - medium"
 print "Level 3 - hard"
 print "*" * 16
 
-while True: #Checks it is a number and whether it is between the requested range.
+while True: #Checks whether the user has chosen between 1 and 3. While the user does not choose a valid option the request is repeated.
   try:
-    minimum_option = 1
-    maximum_option = 3
+    minimum_level = 1
+    maximum_level = 3
     level = int(raw_input('Level: ')) 
-    if level >= minimum_option and maximum_option <= 4:
+    if level >= minimum_level and level <= maximum_level:
       break
     else:
       print "\nEnter a value between 1 and 3..." 
   except ValueError:
     print "\nOops! That was no valid number. Try again..."
 
-while True: #Checks it is a number and whether it is between the requested range.
+while True: #Checks whether the user has chosen between 1 and 10. While the user does not choose a valid option the request is repeated.
   try:
     minimum_attemps = 1
     maximum_attemps = 10
-    attempts = int(raw_input('\nHow many attempts do you want?\n '))
+    attempts = int(raw_input('\nHow many attempts do you want? '))
     if attempts >= minimum_attemps and attempts <= maximum_attemps:
       break
     else:
@@ -136,32 +181,4 @@ while True: #Checks it is a number and whether it is between the requested range
   except ValueError:
     print "\nOops! That was no valid number. Try again..."
 
-hits = 0 #Starts the variable hits to zero.
-
-phrase_and_words = choose_level(level) #Depending on the level chosen by the user, calls the choose_level function to get the text and missing words.
-
-phrase = phrase_and_words[0].split() #Separates text from words and assigns text to variable phrase
-words = phrase_and_words[1] #Separates the words and assigns words to variable words
-
-phrase_edit = ' '.join(phrase) #The variable phrase_edit serves to print the text to the screen in a string format for a better visualization of the user.  
-
-attemps_minimum = 0
-hits_maximum = 4
-
-while attempts > attemps_minimum and hits < hits_maximum: #While attempts are greater than zero and hits less than four, the game runs.
-    txt_hits = str(hits+1) #txt_hits is an auxiliary variable that allows to display whitespace with the correct values for the user.
-
-    print phrase_edit #print the text to the screen in a string format for a better visualization of the user.
-
-    if check_word(hits,phrase_edit): ##Checks with the help of the check Word function, taking into account the hits already obtained by the user which word to discover in the text.                                                
-      print "\nCongratulations! You get the word!\n" 
-      phrase_edit = phrase_edit.replace('___%s___'%txt_hits, words[hits]) ##If the user hits the missing words, the text appears with the blanks filled as the user hits.
-      hits += 1 #If the user hits, he adds 1 to the hits which allows him to move to the next blank space.
-    else:
-      attempts -= 1 #If the user fails, remove 1 of the remaining attempts and informs the user how many attempts still have.
-      if attempts > 0:
-        print "\nYou fail! But you still have %d attempts!!!\n" %attempts
-      else:
-        print "\nYou have no more attempts! :'(\n"
-
-game_result(hits) #Taking into account the hits, verifies if the user won by calling the game_result function.
+play(level, attempts)
