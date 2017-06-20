@@ -109,12 +109,8 @@ def play(level, attempts):
   phrase = phrase_and_words[0].split() #Separates text from words and assigns text to variable phrase
   words = phrase_and_words[1] #Separates the words and assigns words to variable words
   phrase_edit = ' '.join(phrase) #The variable phrase_edit serves to print the text to the screen in a string format for a better visualization of the user. 
-  attemps_minimum = 0
-  hits_maximum = 4
-  one_hit_value = 1
-  one_attempts_value= 1
 
-  while attempts > attemps_minimum and hits < hits_maximum: #While attempts are greater than zero and hits less than four, the game runs.
+  while have_hits_to_continue(hits) and have_attempts_to_continue(attempts): #While attempts are greater than zero and hits less than four, the game runs.
       whitespace_value = 1
       txt_hits = str(hits+whitespace_value) #txt_hits is an auxiliary variable that allows to display whitespace with the correct values for the user.
       print phrase_edit #print the text to the screen in a string format for a better visualization of the user.
@@ -122,14 +118,56 @@ def play(level, attempts):
       if check_word(hits, word_position): ##Checks with the help of the check Word function, taking into account the hits already obtained by the user which word to discover in the text.
         print "\nCongratulations! You get the word!\n" 
         phrase_edit = phrase_edit.replace('___%s___'%txt_hits, word_position) ##If the user hits the missing words, the text appears with the blanks filled as the user hits.
-        hits += one_hit_value #hits += 1 #If the user hits, he adds 1 to the hits which allows him to move to the next blank space.
+        hits = count_hits(hits) 
       else:
-        attempts -= one_attempts_value #If the user fails, remove 1 of the remaining attempts and informs the user how many attempts still have.
-        if attempts > attemps_minimum:
-          print "\nYou fail! But you still have %d attempts!!!\n" %attempts
-        else:
-          print "\nYou have no more attempts! :'(\n"
+        attempts = count_attempts(attempts)
   game_result(hits) #Taking into account the hits, verifies if the user won by calling the game_result function.
+
+def have_attempts_to_continue(attempts):
+  """
+  Behavior: Verifies that the player still have enough attempts to continue 
+  Input: the number of attempts
+  Output: Indicates whether or not the player has any further attempts to continue
+  """
+  attemps_minimum = 0
+  if attempts > attemps_minimum:
+    print ('\nYou have %d more attemps...\n' %attempts)
+    return True
+  else:
+    print '\nYou dont have more attemps!'
+    return False
+
+def have_hits_to_continue(hits):
+  """
+  Behavior: Verifies that the player still have hits to continue 
+  Input: the number of hits
+  Output: Indicates whether or not the player has hits to continue
+  """
+  hits_maximum = 4
+  if hits < hits_maximum:
+    return True
+  else:
+    return False
+
+def count_hits(hits):
+  """
+  Behavior: Add one more hit to count 
+  Input: Total of Hits until now
+  Output: Total of Hits after now
+  """
+  one_hit_value = 1
+  hits += one_hit_value
+  return hits
+
+def count_attempts(attempts):
+  """
+  Behavior: Withdraw one more attempt to count 
+  Input: Total of attempts until now
+  Output: Total of attempts after now
+  """
+  one_attempts_value = 1
+  attempts -= one_attempts_value
+  return attempts
 
 def game_result(hits): #This function checks if the user has hit the 4 times
   """
