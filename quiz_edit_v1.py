@@ -84,7 +84,8 @@ def check_word(hits, words):
   Input: The number of hits and the word to check
   Output: Indicates if the word corresponds to the blank space or not
   """
-  txt_hits = hits + 1 #txt_hits is a temporary variable to help identify what white space the user is trying to reach.
+  whitespace_value = 1
+  txt_hits = hits + whitespace_value #txt_hits is a temporary variable to help identify what white space the user is trying to reach.
   str(txt_hits)
   #Prompts the user to type the word
   what_is_the_word = raw_input('\nWhat is the missing word __%d__?...: ' %txt_hits).upper() # The upper one always allows to transform the words that the user enters in capital letters and thus to correspond exactly if it hits the missing word.
@@ -111,10 +112,11 @@ def play(level, attempts):
   attemps_minimum = 0
   hits_maximum = 4
   one_hit_value = 1
-  one_attempts_value= -1
+  one_attempts_value= 1
 
   while attempts > attemps_minimum and hits < hits_maximum: #While attempts are greater than zero and hits less than four, the game runs.
-      txt_hits = str(hits+1) #txt_hits is an auxiliary variable that allows to display whitespace with the correct values for the user.
+      whitespace_value = 1
+      txt_hits = str(hits+whitespace_value) #txt_hits is an auxiliary variable that allows to display whitespace with the correct values for the user.
       print phrase_edit #print the text to the screen in a string format for a better visualization of the user.
       word_position = words[hits]
       if check_word(hits, word_position): ##Checks with the help of the check Word function, taking into account the hits already obtained by the user which word to discover in the text.
