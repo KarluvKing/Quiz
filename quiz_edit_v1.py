@@ -86,11 +86,10 @@ def check_word(hits, words):
   """
   txt_hits = hits + 1 #txt_hits is a temporary variable to help identify what white space the user is trying to reach.
   str(txt_hits)
-  print ""
   #Prompts the user to type the word
-  whatIsTheWord = raw_input('What is the missing word __%d__?...: \n' %txt_hits).upper() # The upper one always allows to transform the words that the user enters in capital letters and thus to correspond exactly if it hits the missing word.
+  what_is_the_word = raw_input('\nWhat is the missing word __%d__?...: ' %txt_hits).upper() # The upper one always allows to transform the words that the user enters in capital letters and thus to correspond exactly if it hits the missing word.
   #Verifies that the word chosen by the user matches the respective blank space.
-  if whatIsTheWord == words:
+  if what_is_the_word == words:
     #If yes, return True
     return True
   else:
@@ -111,6 +110,9 @@ def play(level, attempts):
   phrase_edit = ' '.join(phrase) #The variable phrase_edit serves to print the text to the screen in a string format for a better visualization of the user. 
   attemps_minimum = 0
   hits_maximum = 4
+  one_hit_value = 1
+  one_attempts_value= -1
+
   while attempts > attemps_minimum and hits < hits_maximum: #While attempts are greater than zero and hits less than four, the game runs.
       txt_hits = str(hits+1) #txt_hits is an auxiliary variable that allows to display whitespace with the correct values for the user.
       print phrase_edit #print the text to the screen in a string format for a better visualization of the user.
@@ -118,10 +120,10 @@ def play(level, attempts):
       if check_word(hits, word_position): ##Checks with the help of the check Word function, taking into account the hits already obtained by the user which word to discover in the text.
         print "\nCongratulations! You get the word!\n" 
         phrase_edit = phrase_edit.replace('___%s___'%txt_hits, word_position) ##If the user hits the missing words, the text appears with the blanks filled as the user hits.
-        hits += 1 #hits += 1 #If the user hits, he adds 1 to the hits which allows him to move to the next blank space.
+        hits += one_hit_value #hits += 1 #If the user hits, he adds 1 to the hits which allows him to move to the next blank space.
       else:
-        attempts -= 1 #If the user fails, remove 1 of the remaining attempts and informs the user how many attempts still have.
-        if attempts > 0:
+        attempts -= one_attempts_value #If the user fails, remove 1 of the remaining attempts and informs the user how many attempts still have.
+        if attempts > attemps_minimum:
           print "\nYou fail! But you still have %d attempts!!!\n" %attempts
         else:
           print "\nYou have no more attempts! :'(\n"
@@ -140,45 +142,46 @@ def game_result(hits): #This function checks if the user has hit the 4 times
   else:
     print "\nYou loose! :-(\n"
 
+def level_number(level):
+  """
+  Behavior: Assigns the chosen level to a numerical value
+  Input: The chosen level
+  Output: The level number
+  """
+  if level == 'EASY':
+    level = 1
+    return level
+  if level == 'MEDIUM':
+    level = 2
+    return level
+  if level == 'HARD':
+    level = 3
+    return level    
 '''
 Beginning of the game
 '''
-
-level = 0
-attempts = 0
-
 # Print the game information menu
 print "\nWelcome to the game!\n"
 print "In this game we will test your knowledge about 3 European cities. Rome, Prague, and Lisbon.\n"
 print "*" * 16
-print "Choose a level from 1 to 3:"
-print "Level 1 - easy"
-print "Level 2 - medium"
-print "Level 3 - hard"
+print "Choose a level:"
+print "Level - easy"
+print "Level - medium"
+print "Level - hard"
 print "*" * 16
 
-while True: #Checks whether the user has chosen between 1 and 3. While the user does not choose a valid option the request is repeated.
-  try:
-    minimum_level = 1
-    maximum_level = 3
-    level = int(raw_input('Level: ')) 
-    if level >= minimum_level and level <= maximum_level:
-      break
-    else:
-      print "\nEnter a value between 1 and 3..." 
-  except ValueError:
-    print "\nOops! That was no valid number. Try again..."
+levels_available =['EASY', 'MEDIUM', 'HARD']
+level = None
 
-while True: #Checks whether the user has chosen between 1 and 10. While the user does not choose a valid option the request is repeated.
-  try:
-    minimum_attemps = 1
-    maximum_attemps = 10
-    attempts = int(raw_input('\nHow many attempts do you want? '))
-    if attempts >= minimum_attemps and attempts <= maximum_attemps:
-      break
-    else:
-      print "\nOops! The maximum number of attempts is 10!" 
-  except ValueError:
-    print "\nOops! That was no valid number. Try again..."
+while level not in levels_available:
+  level = (raw_input('Choose level: Easy, Medium or Hard -> ').upper())
+
+level = level_number(level)
+
+attempts_available = range(1,11)
+attempts = None
+
+while attempts not in attempts_available:
+  attempts = int(raw_input('\nHow many attempts do you want? 1-10 -> ')) 
 
 play(level, attempts)
